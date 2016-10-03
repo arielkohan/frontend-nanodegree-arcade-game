@@ -6,9 +6,9 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
-    this.y = Math.floor(Math.random() * 3) * 100 ; 
-    this.x = -100;
-    this.speed = Math.random() * 100; //decimal entre 0 y 1
+    this.y = Math.floor(Math.random() * 3) * moveY + initialY + moveY ; 
+    this.x = initialX - moveX;
+    this.speed = Math.random() * 300; //decimal entre 0 y 1
 };
 
 // Update the enemy's position, required method for game
@@ -20,8 +20,11 @@ Enemy.prototype.update = function(dt) {
     this.x += dt * this.speed ;
 
     //HANDLE COLLISION
-    if(player && player.x == this.x && player.y == this.y)
-        player.y = 0;
+    if(player && player.x == this.x && player.y == this.y){
+        player.y = initialY + moveY * 5;
+        console.log("crash!");
+    }
+
 
 };
 
@@ -43,20 +46,20 @@ var Player = function() {
     ];
     //this.sprite = sprites[ Math.floor(Math.random() * 5) ]; //random character
     this.sprite =  'images/char-boy.png';
-    this.x = 200;
-    this.y = 400;
+    this.x = initialX + moveX * 2;
+    this.y = initialY + moveY * 5;
 
 };
 
 Player.prototype.update = function(horizontal, vertical) {
     if(vertical){
-        var nextYPosition = this.y + 100 * vertical ;
-        if(nextYPosition >= 0 && nextYPosition <= 500)
+        var nextYPosition = this.y + moveY * vertical ;
+        if(nextYPosition >= initialY && nextYPosition <= (initialY + 4 * moveY))
                 this.y = nextYPosition;
     }
     if(horizontal){
-        var nextXPosition = this.x + 100 * horizontal ;
-        if(nextXPosition >= 0 && nextXPosition <= 400)
+        var nextXPosition = this.x + moveX * horizontal ;
+        if(nextXPosition >= initialX && nextXPosition <= (initialX + 4 * moveX))
                 this.x = nextXPosition;
     }
 };
@@ -75,11 +78,16 @@ Player.prototype.handleInput = function (input){
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var moveX = 101,
+    moveY = 83,
+    initialX = 0,
+    initialY = -10;
 
 var player = new Player();
 var allEnemies = [];
 for(var i = 0 ; i < 10 ; i++){
     allEnemies.push(new Enemy());
+    console.log(allEnemies[allEnemies.length - 1].y);
 }
 
 // This listens for key presses and sends the keys to your
