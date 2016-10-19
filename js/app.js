@@ -20,13 +20,23 @@ Enemy.prototype.update = function(dt) {
     this.x += dt * this.speed ;
 
     //HANDLE COLLISION
-    if(player && player.x == this.x && player.y == this.y){
+    
+    var distanceX = this.calculateDistanceXToPlayer(player);
+    if(player && player.y == this.y && distanceX && distanceX <55){
         player.y = initialY + moveY * 5;
         console.log("crash!");
     }
 
-
+//    console.log("ENEMY (" + this.x + ";" + this.y + ")");
 };
+
+Enemy.prototype.calculateDistanceXToPlayer = function(player){
+    if(player){
+        return Math.sqrt(  Math.pow(this.x - player.x, 2)   );
+    } else {
+        throw "No player!";
+    }
+}
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
@@ -54,7 +64,7 @@ var Player = function() {
 Player.prototype.update = function(horizontal, vertical) {
     if(vertical){
         var nextYPosition = this.y + moveY * vertical ;
-        if(nextYPosition >= initialY && nextYPosition <= (initialY + 4 * moveY))
+        if(nextYPosition >= initialY && nextYPosition <= (initialY + 5 * moveY))
                 this.y = nextYPosition;
     }
     if(horizontal){
@@ -62,6 +72,8 @@ Player.prototype.update = function(horizontal, vertical) {
         if(nextXPosition >= initialX && nextXPosition <= (initialX + 4 * moveX))
                 this.x = nextXPosition;
     }
+
+    //console.log(" PLAYER (" + this.x + ";" + this.y + ")");
 };
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
